@@ -1,0 +1,256 @@
+// GearGuard Premium Theme
+// Variables
+$primary: #1f3a5f;
+$secondary: #4a7ba7;
+$success: #27ae60;
+$danger: #e74c3c;
+$warning: #f39c12;
+$info: #3498db;
+$light: #f8f9fa;
+$dark: #2c3e50;
+
+$border-radius: 10px;
+$border-radius-lg: 15px;
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+$shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+$shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.18);
+
+$transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Global Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f5f7fa;
+  color: $dark;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+// Utility Classes
+.shadow-sm {
+  box-shadow: $shadow-sm;
+}
+
+.shadow-md {
+  box-shadow: $shadow-md;
+}
+
+.shadow-lg {
+  box-shadow: $shadow-lg;
+}
+
+.transition-smooth {
+  transition: $transition-smooth;
+}
+
+.rounded-premium {
+  border-radius: $border-radius;
+}
+
+.rounded-premium-lg {
+  border-radius: $border-radius-lg;
+}
+
+// Button Overrides
+.btn {
+  border-radius: $border-radius;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  transition: $transition-smooth;
+  border: none;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #1a2d4a 0%, #3d6b94 100%);
+  color: white;
+
+  &:hover {
+    background: linear-gradient(135deg, #152238 0%, #35587f 100%);
+    color: white;
+  }
+}
+
+.btn-outline-primary {
+  color: $primary;
+  border: 2px solid $primary;
+
+  &:hover {
+    background: $primary;
+    color: white;
+    border-color: $primary;
+  }
+}
+
+.btn-danger {
+  background: $danger;
+
+  &:hover {
+    background: #cc3820;
+  }
+}
+
+.btn-success {
+  background: $success;
+
+  &:hover {
+    background: #1e8449;
+  }
+}
+
+// Card Overrides
+.card {
+  border: none;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  transition: $transition-smooth;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+    color: white;
+    border: none;
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+    padding: 1.25rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+// Badge Overrides
+.badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: $border-radius;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.badge-primary {
+  background: $primary;
+}
+
+.badge-danger {
+  background: $danger;
+}
+
+.badge-success {
+  background: $success;
+}
+
+.badge-warning {
+  background: $warning;
+  color: white;
+}
+
+// Form Controls
+.form-control, .form-select {
+  border-radius: $border-radius;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  transition: $transition-smooth;
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
+  }
+}
+
+.form-label {
+  font-weight: 600;
+  color: $dark;
+  margin-bottom: 0.5rem;
+}
+
+// Modal
+.modal-content {
+  border: none;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-lg;
+
+  .modal-header {
+    background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+    color: white;
+    border: none;
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .modal-footer {
+    border-top: 1px solid #f0f0f0;
+    padding: 1.5rem;
+  }
+}
+
+// Tables
+.table {
+  background: white;
+  border-radius: $border-radius;
+  overflow: hidden;
+
+  thead {
+    background: linear-gradient(135deg, #3d5b82 0%, #6096c9 100%);
+    color: white;
+
+    th {
+      border: none;
+      font-weight: 700;
+      padding: 1rem;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #f0f0f0;
+      transition: $transition-smooth;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      td {
+        padding: 1rem;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+
+  .card {
+    border-radius: $border-radius;
+  }
+}
