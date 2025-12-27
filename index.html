@@ -1,13 +1,487 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>oddo-app</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GearGuard API Test Client</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .endpoint {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .endpoint:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .endpoint-method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 10px;
+        }
+
+        .get {
+            background: #28a745;
+            color: white;
+        }
+
+        .post {
+            background: #007bff;
+            color: white;
+        }
+
+        .put {
+            background: #ffc107;
+            color: black;
+        }
+
+        .delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .response-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+
+        .success {
+            border-left: 4px solid #28a745;
+        }
+
+        .error {
+            border-left: 4px solid #dc3545;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 GearGuard API Test Client</h1>
+            <p>Interactive API testing interface</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="equipmentCount">0</div>
+                <div class="stat-label">Equipment</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="teamCount">0</div>
+                <div class="stat-label">Teams</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="requestCount">0</div>
+                <div class="stat-label">Requests</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="overdueCount">0</div>
+                <div class="stat-label">Overdue</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Equipment Endpoints -->
+            <div class="card">
+                <h2>📦 Equipment Endpoints</h2>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/equipment')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/equipment</span>
+                </div>
+                <div class="endpoint" onclick="openCreateEquipment()">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/api/equipment</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/equipment/EQP-00001')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/equipment/:id</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/equipment/EQP-00001/requests')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/equipment/:id/requests</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/equipment/EQP-00001/open-count')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/equipment/:id/open-count</span>
+                </div>
+            </div>
+
+            <!-- Team Endpoints -->
+            <div class="card">
+                <h2>👥 Team Endpoints</h2>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/teams')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/teams</span>
+                </div>
+                <div class="endpoint" onclick="openCreateTeam()">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/api/teams</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/teams/TEAM-0001')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/teams/:id</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/teams/TEAM-0001/requests')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/teams/:id/requests</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/teams/TEAM-0001/stats')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/teams/:id/stats</span>
+                </div>
+            </div>
+
+            <!-- Request Endpoints -->
+            <div class="card">
+                <h2>📋 Request Endpoints</h2>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/requests')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/requests</span>
+                </div>
+                <div class="endpoint" onclick="openCreateCorrectiveRequest()">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/api/requests/corrective</span>
+                </div>
+                <div class="endpoint" onclick="openCreatePreventiveRequest()">
+                    <span class="endpoint-method post">POST</span>
+                    <span class="endpoint-path">/api/requests/preventive</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/requests/kanban')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/requests/kanban</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/requests/calendar')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/requests/calendar</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api/requests/reports')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api/requests/reports</span>
+                </div>
+            </div>
+
+            <!-- System Endpoints -->
+            <div class="card">
+                <h2>⚙️ System Endpoints</h2>
+                <div class="endpoint" onclick="makeRequest('GET', '/health')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/health</span>
+                </div>
+                <div class="endpoint" onclick="makeRequest('GET', '/api')">
+                    <span class="endpoint-method get">GET</span>
+                    <span class="endpoint-path">/api</span>
+                </div>
+                <button onclick="loadStats()">📊 Load Statistics</button>
+            </div>
+        </div>
+
+        <!-- Response Display -->
+        <div class="card">
+            <h2>📤 Response</h2>
+            <div id="responseBox" class="response-box">
+                Click on an endpoint to see the response here...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+
+        async function makeRequest(method, path, body = null) {
+            const responseBox = document.getElementById('responseBox');
+            responseBox.innerHTML = '<div class="loading"></div> Loading...';
+
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(API_BASE + path, options);
+                const data = await response.json();
+
+                const isSuccess = response.ok;
+                responseBox.className = `response-box ${isSuccess ? 'success' : 'error'}`;
+                responseBox.innerHTML = `<strong>${method} ${path}</strong>\nStatus: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                responseBox.className = 'response-box error';
+                responseBox.innerHTML = `<strong>Error:</strong>\n${error.message}`;
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const eqResponse = await fetch(API_BASE + '/api/equipment');
+                const eqData = await eqResponse.json();
+                document.getElementById('equipmentCount').textContent = eqData.count || 0;
+
+                const teamResponse = await fetch(API_BASE + '/api/teams');
+                const teamData = await teamResponse.json();
+                document.getElementById('teamCount').textContent = teamData.count || 0;
+
+                const reqResponse = await fetch(API_BASE + '/api/requests');
+                const reqData = await reqResponse.json();
+                document.getElementById('requestCount').textContent = reqData.count || 0;
+
+                const reportsResponse = await fetch(API_BASE + '/api/requests/reports');
+                const reportsData = await reportsResponse.json();
+                document.getElementById('overdueCount').textContent = reportsData.data.summary.overdueRequests || 0;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function openCreateEquipment() {
+            const equipmentName = prompt('Equipment Name:');
+            if (!equipmentName) return;
+            const serialNumber = prompt('Serial Number:');
+            if (!serialNumber) return;
+            const category = prompt('Category (Machinery/Electrical/Pneumatic/Hydraulic/Tools/Safety Equipment/Other):');
+            if (!category) return;
+            const purchaseDate = prompt('Purchase Date (YYYY-MM-DD):');
+            if (!purchaseDate) return;
+            const warrantyExpiry = prompt('Warranty Expiry (YYYY-MM-DD):');
+            if (!warrantyExpiry) return;
+            const department = prompt('Department:');
+            if (!department) return;
+            const location = prompt('Location:');
+            if (!location) return;
+
+            makeRequest('POST', '/api/equipment', {
+                equipmentName,
+                serialNumber,
+                category,
+                purchaseDate,
+                warrantyExpiry,
+                department,
+                location
+            });
+        }
+
+        function openCreateTeam() {
+            const teamName = prompt('Team Name:');
+            if (!teamName) return;
+
+            makeRequest('POST', '/api/teams', {
+                teamName,
+                technicians: []
+            });
+        }
+
+        function openCreateCorrectiveRequest() {
+            const subject = prompt('Subject:');
+            if (!subject) return;
+            const equipmentId = prompt('Equipment ID (e.g., EQP-00001):');
+            if (!equipmentId) return;
+
+            makeRequest('POST', '/api/requests/corrective', {
+                subject,
+                equipmentId
+            });
+        }
+
+        function openCreatePreventiveRequest() {
+            const subject = prompt('Subject:');
+            if (!subject) return;
+            const equipmentId = prompt('Equipment ID (e.g., EQP-00001):');
+            if (!equipmentId) return;
+            const scheduledDate = prompt('Scheduled Date (YYYY-MM-DD):');
+            if (!scheduledDate) return;
+
+            makeRequest('POST', '/api/requests/preventive', {
+                subject,
+                equipmentId,
+                scheduledDate
+            });
+        }
+
+        // Load stats on page load
+        window.onload = () => {
+            loadStats();
+        };
+    </script>
+</body>
 </html>
